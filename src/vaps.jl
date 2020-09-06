@@ -14,12 +14,12 @@ push!(actions, 0) # Append bit-setting action
 
 # Experience sequence
 mutable struct Sequence
-	s::State
-	a::Action
-	r::Reward
-	t::Time
-	Sequence(s,a,t) = new(s, a, R(s,a), t)
-	Sequence(s,a,r,t) = new(s, a, r, t)
+    s::State
+    a::Action
+    r::Reward
+    t::Time
+    Sequence(s,a,t) = new(s, a, R(s,a), t)
+    Sequence(s,a,r,t) = new(s, a, r, t)
 end
 
 const cmax = 1.0 # Maximum temperature
@@ -35,8 +35,8 @@ R(s::State, a::Action) = s == State(9) ? 1 : 0 # Reward function
 
 # Increment the visit counters
 function visit!(s::State, a::Action, t::Time)
-	Nₛₐₜ[s,a,t] += 1
-	Nₛₜ[s,t] += 1
+    Nₛₐₜ[s,a,t] += 1
+    Nₛₜ[s,t] += 1
 end
 
 # Main core of VAPS(1)
@@ -44,18 +44,18 @@ end
 e(z::Sequence; b=0, γ=0.9) = b - γ^z.t * z.r
 
 function boltzmann_distribution(Q::Values, s::State, a::Action, c::Temp)
-	return exp(Q[s,a]/c) / sum(a′->exp(Q[s,a′]/c), actions)
+    return exp(Q[s,a]/c) / sum(a′->exp(Q[s,a′]/c), actions)
 end
 
 function exploration_trace(Q::Values, s::State, a::Action, t::Time, N::Trial)
-	c::Temp = max(cmax - δc(N), cmin)
-	return 1/c * (Nₛₐₜ[s,a,t] - Nₛₜ[s,t]*boltzmann_distribution(Q, s, a, c))
+    c::Temp = max(cmax - δc(N), cmin)
+    return 1/c * (Nₛₐₜ[s,a,t] - Nₛₜ[s,t]*boltzmann_distribution(Q, s, a, c))
 end
 
 function update_q!(Q::Values, z::Sequence, N::Trial)
-	(s::State, a::Action, t::Time) = (z.s, z.a, z.t)
-	visit!(s, a, t)
-	Q[s,a] = Q[s,a] - α(N)*e(z)*exploration_trace(Q, s, a, t, N)
+    (s::State, a::Action, t::Time) = (z.s, z.a, z.t)
+    visit!(s, a, t)
+    Q[s,a] = Q[s,a] - α(N)*e(z)*exploration_trace(Q, s, a, t, N)
 end
 
 
