@@ -1,0 +1,7 @@
+name = "StigmergicPolicySearch"
+uuid = "ca21c89e-de99-4bb7-9a13-0a337463d19d"
+authors = ["Robert Moss <mossr@cs.stanford.edu>"]
+version = "0.1.0"
+
+[deps]
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
